@@ -10,6 +10,7 @@ import {
   Modal,
   Platform,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -297,10 +298,14 @@ function ItemDetailModal({ item, onClose, onChat, liked, onToggleLike }: { item:
             <Ionicons name="arrow-back" size={24} color="#212121" />
           </TouchableOpacity>
           <View style={styles.detailHeaderRight}>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7} onPress={() => Share.share({ message: `${item.title}\n${item.price}\n당근마켓에서 확인해보세요!` })}>
               <Ionicons name="share-outline" size={24} color="#212121" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7} onPress={() => Alert.alert('더보기', '', [
+              { text: '신고하기', style: 'destructive', onPress: () => Alert.alert('신고 완료', '신고가 접수되었습니다.') },
+              { text: '이 판매자 차단', style: 'destructive', onPress: () => Alert.alert('차단 완료', '해당 판매자를 차단했습니다.') },
+              { text: '취소', style: 'cancel' },
+            ])}>
               <Ionicons name="ellipsis-vertical" size={24} color="#212121" />
             </TouchableOpacity>
           </View>

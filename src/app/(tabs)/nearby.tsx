@@ -7,36 +7,9 @@ type Store = { id: string; name: string; category: string; distance: string; hou
 type Job   = { id: string; company: string; role: string; pay: string; distance: string; hours: string; desc: string };
 type RE    = { id: string; address: string; type: string; price: string; size: string; floor: string; desc: string };
 
-const STORES: Store[] = [
-  { id: '1', name: '역삼 곱창',    category: '음식점', distance: '150m', hours: '17:00 - 24:00', phone: '02-1234-5678', desc: '30년 전통의 곱창 전문점. 신선한 재료만 사용합니다. 혼밥·단체 모두 환영해요.' },
-  { id: '2', name: '카페 모모',    category: '카페',   distance: '200m', hours: '08:00 - 22:00', phone: '02-2345-6789', desc: '직접 로스팅한 스페셜티 커피와 수제 베이커리를 즐길 수 있는 조용한 카페예요.' },
-  { id: '3', name: '행복 세탁소',  category: '세탁',   distance: '320m', hours: '08:00 - 21:00', phone: '02-3456-7890', desc: '드라이클리닝, 이불 세탁, 수선 전문. 당일 세탁 가능(오전 접수 기준).' },
-  { id: '4', name: '강남 약국',    category: '약국',   distance: '450m', hours: '09:00 - 21:00', phone: '02-4567-8901', desc: '처방전 조제, 일반 의약품, 건강기능식품 판매. 친절한 상담 제공합니다.' },
-  { id: '5', name: '역삼 미용실',  category: '미용',   distance: '500m', hours: '10:00 - 21:00', phone: '02-5678-9012', desc: '커트, 펌, 염색 전문. 예약 없이 방문 가능하며 남녀 모두 환영합니다.' },
-  { id: '6', name: 'GS25 역삼점', category: '편의점', distance: '80m',  hours: '24시간',        phone: '02-6789-0123', desc: '24시간 운영 편의점. 택배 접수, ATM, 각종 공과금 납부 가능합니다.' },
-  { id: '7', name: '꽃집 블루밍',  category: '꽃집',   distance: '600m', hours: '09:00 - 20:00', phone: '02-7890-1234', desc: '생화·드라이플라워 판매 및 꽃다발 제작. 당일 배달 서비스 제공합니다.' },
-  { id: '8', name: '피트니스 클럽', category: '헬스',  distance: '700m', hours: '06:00 - 23:00', phone: '02-8901-2345', desc: '최신 운동기구 완비, PT 트레이너 상주. 1일권·월정액 모두 이용 가능합니다.' },
-  { id: '9', name: '역삼 PC방',    category: 'PC방',   distance: '850m', hours: '24시간',        phone: '02-9012-3456', desc: '최신 사양 PC, 1인 독립석 완비. 먹거리 메뉴 다양하게 운영합니다.' },
-];
-
-const JOBS: Job[] = [
-  { id: '1', company: '스타벅스 역삼점', role: '바리스타',     pay: '시급 12,000원', distance: '200m', hours: '09:00 - 18:00 (주 5일)',     desc: '커피 음료 제조 및 매장 관리. 경력 무관 지원 가능합니다. 교육 후 업무 시작.' },
-  { id: '2', company: '편의점 GS25',    role: '야간 알바',    pay: '시급 11,500원', distance: '350m', hours: '23:00 - 07:00 (주 3~5일)',  desc: '야간 편의점 운영 보조. 재고 관리, 발주, 청소 포함. 야간 할증 적용.' },
-  { id: '3', company: '역삼 헬스장',    role: '데스크 직원',  pay: '시급 13,000원', distance: '500m', hours: '06:00 - 14:00 (주 5일)',     desc: '회원 관리, 안내 업무, 청소. 운동에 관심 있는 분 우대. 헬스장 무료 이용 가능.' },
-  { id: '4', company: '치킨 본가',      role: '배달·홀 서빙', pay: '시급 12,500원', distance: '600m', hours: '16:00 - 24:00 (주 3일 이상)', desc: '홀 서빙 및 배달 업무. 오토바이 면허 소지자 우대. 식사 제공.' },
-  { id: '5', company: '역삼동 카페',    role: '홀 서빙',      pay: '시급 11,000원', distance: '250m', hours: '10:00 - 18:00 (주 4일)',     desc: '음료 서빙 및 테이블 관리. 커피 관심 있는 분 환영. 음료 무한 제공.' },
-  { id: '6', company: '강남구 도서관',  role: '사서 보조',    pay: '시급 11,200원', distance: '900m', hours: '09:00 - 18:00 (주 5일)',     desc: '도서 정리 및 대출 반납 보조 업무. 조용한 환경. 주차 가능.' },
-  { id: '7', company: '역삼 마트',      role: '계산원',       pay: '시급 11,500원', distance: '400m', hours: '09:00 - 21:00 (주 4~5일)',  desc: '고객 계산 및 진열 업무. 경력 무관. 점심 제공. 교통비 별도.' },
-];
-
-const REALESTATE: RE[] = [
-  { id: '1', address: '역삼1동 00빌라',   type: '원룸 월세', price: '보증 500 / 45만',   size: '20㎡', floor: '3층/5층',   desc: '역세권 위치, 풀옵션(냉장고·세탁기·에어컨), 조용한 주거 환경. 관리비 5만원.' },
-  { id: '2', address: '삼성1동 신축',     type: '오피스텔',  price: '보증 1000 / 85만', size: '33㎡', floor: '7층/15층',  desc: '2024년 신축. 1.5룸 구조, 빌트인 가전 완비. 단지 내 헬스장, 세탁실 이용 가능.' },
-  { id: '3', address: '역삼2동 아파트',   type: '전세',      price: '3억 5천',           size: '59㎡', floor: '12층/20층', desc: '방 2개, 화장실 1개. 초등학교 도보 5분. 지하철 역세권. 주차 1대 가능.' },
-  { id: '4', address: '대치2동 투룸',     type: '월세',      price: '보증 1000 / 70만', size: '45㎡', floor: '2층/4층',   desc: '방 2개 구조, 신축 리모델링. 학원가 도보 5분. 조용한 주택가 위치.' },
-  { id: '5', address: '도곡1동 오피스텔', type: '전세',      price: '1억 8천',           size: '27㎡', floor: '5층/12층',  desc: '역 도보 3분. 주방·욕실 리모델링 완료. 관리비 포함 가격. 즉시 입주 가능.' },
-  { id: '6', address: '개포동 빌라',      type: '매매',      price: '4억 2천',           size: '66㎡', floor: '4층/4층',   desc: '방 3개, 화장실 2개. 주차 가능, 남향. 초·중·고 모두 도보권. 융자 없음.' },
-];
+const STORES: Store[] = [];
+const JOBS: Job[] = [];
+const REALESTATE: RE[] = [];
 
 // ─── 공통 ────────────────────────────────────────────────────────
 
@@ -426,16 +399,23 @@ export default function NearbyScreen() {
               <Text style={styles.sectionMore}>더보기</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.storeScroll}>
-            {STORE_PREVIEW.map((store) => (
-              <TouchableOpacity key={store.id} style={styles.storeCard} onPress={() => setSelectedStore(store)} activeOpacity={0.7}>
-                <View style={styles.storeThumb}><Ionicons name="storefront-outline" size={28} color="#AAAAAA" /></View>
-                <Text style={styles.storeName} numberOfLines={1}>{store.name}</Text>
-                <Text style={styles.storeMeta}>{store.category}</Text>
-                <Text style={styles.storeDist}>{store.distance}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          {STORE_PREVIEW.length === 0 ? (
+            <View style={styles.emptyBox}>
+              <Ionicons name="storefront-outline" size={36} color="#CCCCCC" />
+              <Text style={styles.emptyText}>아직 근처 가게 정보가 없어요</Text>
+            </View>
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.storeScroll}>
+              {STORE_PREVIEW.map((store) => (
+                <TouchableOpacity key={store.id} style={styles.storeCard} onPress={() => setSelectedStore(store)} activeOpacity={0.7}>
+                  <View style={styles.storeThumb}><Ionicons name="storefront-outline" size={28} color="#AAAAAA" /></View>
+                  <Text style={styles.storeName} numberOfLines={1}>{store.name}</Text>
+                  <Text style={styles.storeMeta}>{store.category}</Text>
+                  <Text style={styles.storeDist}>{store.distance}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         <View style={styles.divider} />
@@ -448,7 +428,12 @@ export default function NearbyScreen() {
               <Text style={styles.sectionMore}>더보기</Text>
             </TouchableOpacity>
           </View>
-          {JOBS.slice(0, 4).map((job) => (
+          {JOBS.length === 0 ? (
+            <View style={styles.emptyBox}>
+              <Ionicons name="briefcase-outline" size={36} color="#CCCCCC" />
+              <Text style={styles.emptyText}>등록된 알바가 없어요</Text>
+            </View>
+          ) : JOBS.slice(0, 4).map((job) => (
             <TouchableOpacity key={job.id} style={styles.listItem} onPress={() => setSelectedJob(job)} activeOpacity={0.7}>
               <View style={[styles.listIcon, { backgroundColor: '#E3F2FD' }]}><Ionicons name="briefcase-outline" size={22} color="#2196F3" /></View>
               <View style={styles.listInfo}>
@@ -476,7 +461,12 @@ export default function NearbyScreen() {
               <Text style={styles.sectionMore}>더보기</Text>
             </TouchableOpacity>
           </View>
-          {REALESTATE.slice(0, 3).map((r) => (
+          {REALESTATE.length === 0 ? (
+            <View style={styles.emptyBox}>
+              <Ionicons name="home-outline" size={36} color="#CCCCCC" />
+              <Text style={styles.emptyText}>등록된 매물이 없어요</Text>
+            </View>
+          ) : REALESTATE.slice(0, 3).map((r) => (
             <TouchableOpacity key={r.id} style={styles.listItem} onPress={() => setSelectedRE(r)} activeOpacity={0.7}>
               <View style={[styles.listIcon, { backgroundColor: '#E8F5E9' }]}><Ionicons name="home-outline" size={22} color="#4CAF50" /></View>
               <View style={styles.listInfo}>
@@ -546,6 +536,8 @@ const styles = StyleSheet.create({
   listDist:         { fontSize: 12, color: '#FF6F0F', fontWeight: '500' },
   appliedBadge:     { backgroundColor: '#E3F2FD', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
   appliedBadgeText: { fontSize: 10, color: '#2196F3', fontWeight: '700' },
+  emptyBox:         { alignItems: 'center', paddingVertical: 24, gap: 8 },
+  emptyText:        { fontSize: 13, color: '#AAAAAA' },
 });
 
 const dStyles = StyleSheet.create({

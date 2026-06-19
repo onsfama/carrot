@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Post = {
@@ -21,32 +21,14 @@ type Comment = { id: string; author: string; text: string; time: string };
 const TABS        = ['전체', '동네질문', '생활정보', '분실·실종', '동네사건사고', '동네홍보'];
 const WRITE_CATS  = TABS.slice(1);
 
-const INITIAL_POSTS: Post[] = [
-  { id: '1', category: '동네질문',     title: '역삼역 근처 주차장 어디가 저렴한가요?',       preview: '회사 다니면서 매일 주차하는데 좋은 곳 추천 부탁드려요.',             body: '회사 다니면서 매일 주차하는데 좋은 곳 추천 부탁드려요.\n\n역삼역 근처 공영주차장이 있다고 들었는데 거기가 저렴한지도 궁금합니다. 평일 기준으로 종일 주차하면 얼마 정도 나올까요?\n\n혹시 월정액 주차장 아시는 분 계신가요?',       location: '역삼1동', time: '5분 전',   views: 42,  comments: 8,  likes: 3  },
-  { id: '2', category: '생활정보',     title: '오늘부터 역삼동 도로 공사 시작해요',           preview: '강남구청 공지사항 확인했는데 2주간 우회도로 이용하셔야 해요.',       body: '강남구청 공지사항 확인했는데 2주간 우회도로 이용하셔야 해요.\n\n역삼동 테헤란로 일부 구간이 하수도 공사로 인해 2주간 통제됩니다.\n우회도로: 선릉로 → 언주로 방면으로 우회하시면 됩니다.\n\n출퇴근 시간에 많이 막힐 것 같으니 미리 참고하세요!',   location: '역삼2동', time: '20분 전',  views: 128, comments: 15, likes: 22 },
-  { id: '3', category: '분실·실종',    title: '검은 고양이 찾습니다 ㅠㅠ',                   preview: '어제 저녁 역삼1동 근처에서 잃어버렸어요. 목에 파란 방울 달려있어요.', body: '어제 저녁 역삼1동 근처에서 잃어버렸어요. 목에 파란 방울 달려있어요.\n\n이름은 까미이고 중성화된 수컷 고양이입니다. 나이는 3살이에요.\n발견하시면 꼭 연락 주세요. 사례금 드리겠습니다 ㅠㅠ',                  location: '역삼1동', time: '1시간 전', views: 305, comments: 31, likes: 47 },
-  { id: '4', category: '동네사건사고', title: '삼성역 출구 앞 접촉사고 목격하신 분 계신가요', preview: '오전 8시쯤 3번 출구 앞에서 있었던 사고인데 블랙박스 영상 필요해요.', body: '오전 8시쯤 3번 출구 앞에서 있었던 사고인데 블랙박스 영상 필요해요.\n\n파란색 SUV가 은색 세단을 추돌하는 사고였어요. 블랙박스 영상이 있으신 분은 연락 부탁드립니다.\n\n경찰 신고는 이미 했고 보험 처리 중인데 과실 비율 때문에 목격자가 필요합니다.',  location: '삼성1동', time: '2시간 전', views: 89,  comments: 4,  likes: 1  },
-  { id: '5', category: '생활정보',     title: '역삼동 맛있는 국밥집 발견했어요',              preview: '점심 먹으러 갔다가 너무 맛있어서 공유해요. 가격도 착하고 양도 많아요.', body: '점심 먹으러 갔다가 너무 맛있어서 공유해요. 가격도 착하고 양도 많아요.\n\n역삼역 3번 출구에서 5분 거리 "진짜 국밥" 이라는 가게인데요.\n순대국밥 8,000원, 돼지국밥 7,500원이고 양이 정말 많아요!\n\n점심 시간엔 줄 서야 하니 조금 일찍 가시길 추천해요.',         location: '역삼1동', time: '3시간 전', views: 214, comments: 19, likes: 38 },
-  { id: '6', category: '동네홍보',     title: '이번 주 토요일 플리마켓 열려요 🎪',            preview: '대치동 공원에서 오전 10시부터 오후 5시까지. 먹거리 장터도 있어요!',   body: '대치동 공원에서 오전 10시부터 오후 5시까지. 먹거리 장터도 있어요!\n\n다양한 핸드메이드 제품과 빈티지 소품들이 준비되어 있습니다.\n먹거리 장터에는 수제버거, 길거리 타코, 수제 음료 등이 있어요.\n\n입장료는 무료이고 주차는 인근 공영주차장을 이용해주세요!',  location: '대치2동', time: '어제',     views: 532, comments: 43, likes: 91 },
-  { id: '7', category: '동네질문',     title: '강남구 쓰레기 대형 폐기물 신청 어떻게 하나요', preview: '냉장고 버리려는데 신청 방법 아시는 분 알려주세요.',                  body: '냉장고 버리려는데 신청 방법 아시는 분 알려주세요.\n\n오래된 냉장고를 버려야 하는데 어디서 신청하는지 모르겠어요.\n구청 홈페이지에서 신청하면 되나요? 수거 비용은 얼마나 드나요?',                                                  location: '도곡1동', time: '어제',     views: 67,  comments: 12, likes: 5  },
-];
-
-const SAMPLE_COMMENTS: Record<string, Comment[]> = {
-  '1': [{ id: 'c1', author: '역삼동 주민', text: '강남구 공영주차장 앱에서 검색해보세요! 시간당 800원이에요.', time: '3분 전' }, { id: 'c2', author: '테헤란로 이웃', text: '역삼역 2번 출구 뒤편에 월 10만원짜리 있어요.', time: '1분 전' }],
-  '2': [{ id: 'c1', author: '출퇴근러', text: '헉 오늘 막히더니 이래서였군요 감사합니다', time: '15분 전' }, { id: 'c2', author: '역삼2동 주민', text: '언제까지 공사해요?', time: '10분 전' }],
-  '3': [{ id: 'c1', author: '고양이집사', text: '꼭 찾으시길 바랍니다 ㅠㅠ', time: '50분 전' }, { id: 'c2', author: '역삼 이웃', text: '주변에 고양이 보이면 연락드릴게요', time: '30분 전' }],
-  '4': [{ id: 'c1', author: '삼성1동 주민', text: '저도 봤어요. 그 사고 꽤 큰 사고였어요.', time: '1시간 전' }],
-  '5': [{ id: 'c1', author: '점심러', text: '저도 가봤는데 진짜 맛있어요!', time: '2시간 전' }, { id: 'c2', author: '역삼 직장인', text: '오늘 점심 거기 가야겠네요 ㅎㅎ', time: '1시간 전' }],
-  '6': [{ id: 'c1', author: '플마 팬', text: '매년 하는 거 맞죠? 올해도 기대돼요!', time: '어제' }, { id: 'c2', author: '대치동 주민', text: '저도 참여하고 싶은데 부스 신청은 어디서 하나요?', time: '어제' }],
-  '7': [{ id: 'c1', author: '주민', text: '구청 홈페이지에서 신청하면 돼요. 냉장고는 보통 6,000원 정도예요.', time: '어제' }],
-};
+const INITIAL_POSTS: Post[] = [];
 
 function PostDetailModal({ post, visible, onClose, liked, onLike }: {
   post: Post; visible: boolean; onClose: () => void; liked: boolean; onLike: () => void;
 }) {
   const insets = useSafeAreaInsets();
   const [commentText, setCommentText] = useState('');
-  const [localComments, setLocalComments] = useState<Comment[]>(SAMPLE_COMMENTS[post.id] ?? []);
+  const [localComments, setLocalComments] = useState<Comment[]>([]);
 
   const submitComment = () => {
     if (!commentText.trim()) return;
@@ -250,10 +232,15 @@ export default function CommunityScreen() {
   const [posts, setPosts]           = useState<Post[]>(INITIAL_POSTS);
   const [selectedTab, setSelectedTab] = useState('전체');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [writeVisible, setWriteVisible] = useState(false);
 
-  const filtered = selectedTab === '전체' ? posts : posts.filter((p) => p.category === selectedTab);
+  const filtered = posts.filter((p) =>
+    (selectedTab === '전체' || p.category === selectedTab) &&
+    (!searchText.trim() || p.title.includes(searchText.trim()) || p.preview.includes(searchText.trim()))
+  );
 
   const toggleLike = (id: string) =>
     setLikedPosts((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
@@ -266,10 +253,26 @@ export default function CommunityScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>동네생활</Text>
         <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}><Ionicons name="search-outline" size={24} color="#212121" /></TouchableOpacity>
+          <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={() => { setSearchVisible(v => !v); if (searchVisible) { setSearchText(''); Keyboard.dismiss(); } }}><Ionicons name={searchVisible ? 'close-outline' : 'search-outline'} size={24} color="#212121" /></TouchableOpacity>
           <TouchableOpacity style={styles.iconBtn} onPress={() => setWriteVisible(true)} activeOpacity={0.7}><Ionicons name="create-outline" size={24} color="#212121" /></TouchableOpacity>
         </View>
       </View>
+
+      {searchVisible && (
+        <View style={styles.searchBar}>
+          <Ionicons name="search-outline" size={16} color="#AAAAAA" style={{ marginRight: 6 }} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="동네생활 검색"
+            placeholderTextColor="#AAAAAA"
+            value={searchText}
+            onChangeText={setSearchText}
+            autoFocus
+            returnKeyType="search"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+        </View>
+      )}
 
       <View style={styles.tabWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabScroll}>
@@ -347,6 +350,8 @@ const styles = StyleSheet.create({
   emptyText:       { fontSize: 14, color: '#AAAAAA' },
   fab:             { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#FF6F0F', borderRadius: 24, flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 18, gap: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 4 },
   fabText:         { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
+  searchBar:       { flexDirection: 'row', alignItems: 'center', marginHorizontal: 16, marginVertical: 8, backgroundColor: '#F5F5F5', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
+  searchInput:     { flex: 1, fontSize: 15, color: '#212121', padding: 0 },
 });
 
 const wStyles = StyleSheet.create({
